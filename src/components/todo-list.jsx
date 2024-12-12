@@ -2,6 +2,8 @@ import { useState } from "react";
 import { List } from "./list";
 import { AddToDo } from "./todo-add";
 import { ToDoFilter } from "./todo-filter";
+import { toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const ToDoList = () => {
     const [todos, setTodos] = useState([
@@ -12,8 +14,8 @@ export const ToDoList = () => {
 
     const [filter, setFilter] = useState("all")
 
-    const addTodo = (text) => {
-        setTodos([...todos, { id: Date.now(), text, completed: false }]);
+    const handleAdd = (todo) => {
+        setTodos([...todos, todo])
     }
 
     const toggleTodo = (id) => {
@@ -22,8 +24,20 @@ export const ToDoList = () => {
         ))
     }
 
-    const deleteTodo = (id) => {
-        setTodos(todos.filter((todo) => todo.id !== id))
+    const handleDelete = (id) => {
+        toast.success("ToDo has been deleted!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        })
+    
+        setTodos(todos.filter((item) => item.id !== id))
     }
 
     const filteredTodos = todos.filter((todo) => {
@@ -35,9 +49,9 @@ export const ToDoList = () => {
     return (
         <div className="bg-gray-900 text-white p-6 rounded-md shadow-md max-w-md mx-auto">
             <h1 className="text-2xl font-bold text-blue-400 mb-4">ToDoList</h1>
-            <AddToDo onAdd={addTodo} />
+            <AddToDo onAdd={handleAdd} />
             <ToDoFilter currentFilter={filter} onFilterChange={setFilter} />
-            <List items={filteredTodos} onToggle={toggleTodo} onDelete={deleteTodo} />
+            <List items={filteredTodos} onToggle={toggleTodo} onDelete={handleDelete} />
         </div>
     )
 }
